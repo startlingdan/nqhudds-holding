@@ -28,7 +28,24 @@ were still controlled by the outgoing operators.
 
 ## Deploying a change
 
-Push to `main` on `startlingdan/nqhudds-holding` and Railway redeploys.
+**Push alone does NOT deploy.** The service was created through the Railway API with the
+repo as its source, which builds once but does not create a push trigger: `repoTriggers`
+on the service is empty, and there is no `repoTriggerCreate` in Railway's public GraphQL
+schema, so it cannot be added from a session. Until someone connects the repo in the
+Railway UI (service, Settings, Source), every deploy has to be triggered explicitly:
+
+    mutation { serviceInstanceDeployV2(
+      serviceId: "927941d9-a685-4eea-9d6b-42777e4e9f93",
+      environmentId: "9981b05f-6063-44f7-a5fd-c0ac2733a47d",
+      commitSha: "<sha>") }
+
+against `https://backboard.railway.com/graphql/v2` with `RAILWAY_USER_TOKEN`.
+
+Verify afterwards by comparing the served byte count to the local file, because Cloudflare
+sits in front and a stale response looks identical to a successful deploy:
+
+    curl -s "https://nqhudds.org.uk/?v=$(date +%s)" -o /tmp/l.html -w "%{size_download}\n"
+    stat -c%s index.html
 
 ## Cloudflare email obfuscation
 
