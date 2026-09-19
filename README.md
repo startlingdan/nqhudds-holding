@@ -29,3 +29,15 @@ were still controlled by the outgoing operators.
 ## Deploying a change
 
 Push to `main` on `startlingdan/nqhudds-holding` and Railway redeploys.
+
+## Cloudflare email obfuscation
+
+The zone proxies this site (Cloudflare flipped the apex record to proxied on its own,
+despite being created with `proxied: false`). With `email_obfuscation` on, Cloudflare
+rewrote the mailto link to `[email protected]` plus a decoder script. It looked fine in a
+browser but was wrong in the source and for anything without JavaScript.
+
+Fixed twice over: the zone setting is now off, AND the link is wrapped in
+`<!--email_off-->...<!--email_on-->`, which is Cloudflare's per-element opt-out. The
+wrapper travels with the code, so it survives the setting being turned back on or the
+site moving to another Cloudflare zone.
