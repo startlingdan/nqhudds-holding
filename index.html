@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Northern Quarter, Huddersfield</title>
 <meta name="description" content="Grassroots music venue and bar at 28-30 Wood Street, Huddersfield. Run by Northern Quarter Events CIC.">
 <meta name="robots" content="index, follow">
@@ -10,132 +10,425 @@
 <meta property="og:description" content="Grassroots music venue and bar at 28-30 Wood Street, Huddersfield.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nqhudds.org.uk/">
-<meta name="theme-color" content="#131A16">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23131A16'/><text y='72' x='50' text-anchor='middle' font-family='Georgia,serif' font-size='62' font-weight='bold' fill='%23C4D44A'>N</text></svg>">
+<meta name="theme-color" id="theme-color" content="#131516">
+<link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23131516'/><text x='50' y='67' text-anchor='middle' font-family='Arial,sans-serif' font-size='46' font-weight='bold' fill='%23fff'>NQ</text></svg>">
+<script>
+  /* The palette: 20 RAL paint colours, from James Foster's NQ Generator (6 Oct 2026).
+     This visit's colour is chosen here, before the page paints, so it never flashes the wrong one.
+     A visit keeps its colour across page loads (sessionStorage). Adding ?fresh to the address
+     starts a new visit, which replays the first-load sequence. */
+  window.NQ_PALETTE = [
+    ["RAL 2009 Traffic orange", "#E15501"],
+    ["RAL 6005 Moss green", "#0F4336"],
+    ["RAL 3020 Traffic red", "#C1121C"],
+    ["RAL 6000 Patina green", "#327662"],
+    ["RAL 4010 Telemagenta", "#C63678"],
+    ["RAL 3005 Wine red", "#5E2028"],
+    ["RAL 4006 Traffic purple", "#992572"],
+    ["RAL 3009 Oxide red", "#703731"],
+    ["RAL 3017 Rose", "#D3545F"],
+    ["RAL 8023 Orange brown", "#A65E2F"],
+    ["RAL 1027 Curry", "#A77F0E"],
+    ["RAL 8001 Ochre brown", "#9C6B30"],
+    ["RAL 6024 Traffic green", "#008754"],
+    ["RAL 8025 Pale brown", "#755C49"],
+    ["RAL 5021 Water blue", "#07737A"],
+    ["RAL 5011 Steel blue", "#232C3F"],
+    ["RAL 5015 Sky blue", "#2874B2"],
+    ["RAL 7016 Anthracite grey", "#373F43"],
+    ["RAL 5002 Ultramarine blue", "#2B2C7C"],
+    ["RAL 9005 Jet black", "#131516"]
+  ];
+  (function () {
+    var P = window.NQ_PALETTE, d = document.documentElement, kept = null, i = -1, k;
+    try {
+      if (/[?&]fresh(=|&|$)/.test(location.search)) sessionStorage.removeItem("nq-colour");
+      else kept = sessionStorage.getItem("nq-colour");
+    } catch (e) {}
+    for (k = 0; k < P.length; k++) if (P[k][1] === kept) i = k;
+    var returning = i >= 0;
+    if (!returning) i = Math.floor(Math.random() * P.length);
+    window.NQ_START = { c: i, returning: returning };
+    d.className = "js";
+    d.style.setProperty("--nq", P[i][1]);
+    var m = document.getElementById("theme-color");
+    if (m) m.setAttribute("content", P[i][1]);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap">
+<!-- The 40 logo fonts, cut down to just N and Q (about 1 KB each). -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@800&family=Audiowide:wght@400&family=Big+Shoulders:wght@900&family=Bigshot+One:wght@400&family=Black+Ops+One:wght@400&family=Bodoni+Moda:wght@900&family=Calistoga:wght@400&family=Cherry+Swash:wght@700&family=Chewy:wght@400&family=Cinzel:wght@900&family=Corben:wght@700&family=Courier+Prime:wght@700&family=Days+One:wght@400&family=EB+Garamond:wght@800&family=Fontdiner+Swanky:wght@400&family=Fraunces:wght@900&family=Fruktur:wght@400&family=Gravitas+One:wght@400&family=Krona+One:wght@400&family=Labrada:wght@900&text=NQ&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@900&family=Montenegrin+Gothic+One:wght@400&family=Patua+One:wght@400&family=Peralta:wght@400&family=Podkova:wght@800&family=Protest+Guerrilla:wght@400&family=Righteous:wght@400&family=Roboto+Slab:wght@800&family=Rowdies:wght@400&family=Saira+Stencil:wght@900&family=Space+Grotesk:wght@700&family=Space+Mono:wght@700&family=Spectral:wght@800&family=Staatliches:wght@400&family=Stick+No+Bills:wght@800&family=Texturina:wght@900&family=Tilt+Warp:wght@400&family=Unbounded:wght@600&family=Vollkorn:wght@900&family=Zen+Dots:wght@400&text=NQ&display=block">
 <style>
   :root {
-    --green:#1F3D2C;
-    --ink:#131A16;
-    --bone:#F2EADC;
-    --sandstone:#A89878;
-    --acid:#C4D44A;
+    --nq: #131516;            /* set before paint by the script above */
+    --fg: #fff;
+    --ui: "Poppins", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  html { -webkit-text-size-adjust:100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--nq); -webkit-text-size-adjust: 100%; }
+  html.ready { transition: background-color .28s ease; }
   body {
-    font-family:'Archivo', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
-    background:var(--ink);
-    color:var(--bone);
-    min-height:100vh;
-    min-height:100svh;
-    display:flex;
-    flex-direction:column;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
+    font-family: var(--ui);
+    color: var(--fg);
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
   }
-  .rule-top { height:7px; background:var(--acid); flex:0 0 auto; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  main {
-    flex:1 1 auto;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:56px 24px 40px;
+  .page {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    display: grid;
+    gap: 28px;
+    align-content: start;
+    padding: max(20px, env(safe-area-inset-top)) 20px 40px;
   }
-  .inner { width:100%; max-width:660px; }
 
-  .eyebrow {
-    font-size:0.72rem; font-weight:700; letter-spacing:0.28em;
-    text-transform:uppercase; color:var(--sandstone); margin-bottom:22px;
+  /* The logo: a square drawn on canvas, transparent, so the page colour is the square. */
+  .mark {
+    position: relative;
+    justify-self: center;
+    width: 100%;
+    max-width: min(100%, 560px, 72svh);
+    aspect-ratio: 1 / 1;
   }
-  h1 {
-    font-weight:900;
-    font-size:clamp(2.4rem, 11vw, 5.1rem);
-    line-height:0.95;
-    letter-spacing:-0.02em;
-    text-transform:uppercase;
-    color:var(--bone);
-  }
-  h1 .second { display:block; color:var(--acid); }
+  .mark canvas { display: block; width: 100%; height: 100%; }
 
-  .strap {
-    margin-top:26px; padding-top:24px;
-    border-top:1px solid rgba(168,152,120,0.4);
-    font-size:clamp(1rem, 2.6vw, 1.22rem);
-    max-width:46ch;
+  /* The rotate button sits in the empty bottom-left of the square, level with NORTHERN QUARTER. */
+  .rotate {
+    position: absolute;
+    left: 8%;
+    bottom: 6%;
+    width: max(44px, 11%);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: transparent;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-  .strap p + p { margin-top:13px; }
-  .muted { color:var(--sandstone); }
+  .rotate:hover { background: rgba(255, 255, 255, .14); }
+  .rotate:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .rotate svg { width: 54%; height: 54%; }
+  .rotate.busy svg { animation: nq-spin .8s linear infinite; }
+  @keyframes nq-spin { to { transform: rotate(360deg); } }
 
-  .contact { margin-top:34px; }
+  .copy { max-width: 34rem; }
+  .eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; margin-bottom: 14px; }
+  .lead { font-size: clamp(1.25rem, 4.6vw, 1.6rem); font-weight: 700; line-height: 1.3; }
+  .more { margin-top: 14px; font-size: 1.05rem; }
+  .contact { margin-top: 28px; }
   .contact a {
-    display:inline-block;
-    font-weight:700;
-    font-size:clamp(1rem, 2.6vw, 1.14rem);
-    color:var(--ink);
-    background:var(--acid);
-    text-decoration:none;
-    padding:13px 22px;
-    border-radius:3px;
+    display: inline-block;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--nq);
+    background: #fff;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 999px;
   }
-  .contact a:hover, .contact a:focus-visible { background:var(--bone); }
-  .contact a:focus-visible { outline:3px solid var(--acid); outline-offset:3px; }
-
-  .where {
-    margin-top:30px; font-size:0.94rem; color:var(--sandstone);
-  }
-  .where strong { color:var(--bone); font-weight:500; }
+  html.ready .contact a { transition: color .28s ease; }
+  .contact a:hover { background: rgba(255, 255, 255, .88); }
+  .contact a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .where { margin-top: 24px; font-weight: 500; }
 
   footer {
-    flex:0 0 auto;
-    background:var(--green);
-    padding:20px 24px;
-    font-size:0.78rem;
-    color:rgba(242,234,220,0.72);
+    flex: 0 0 auto;
+    padding: 18px 20px calc(18px + env(safe-area-inset-bottom));
+    font-size: .8rem;
+    border-top: 1px solid rgba(255, 255, 255, .35);
   }
-  footer .fin { max-width:660px; margin:0 auto; }
+  footer .fin { max-width: 1120px; margin: 0 auto; display: grid; gap: 6px; }
+  .now { font-weight: 500; }
 
-  @media (min-width:700px) {
-    main { padding:80px 40px 60px; }
-    footer { padding:22px 40px; }
+  /* Without JavaScript there is no logo, so the hidden heading becomes a plain wordmark. */
+  html:not(.js) .mark { display: none; }
+  html:not(.js) .vh {
+    position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal;
+    font-size: clamp(2.4rem, 11vw, 5rem); font-weight: 700; line-height: .95; text-transform: uppercase;
+  }
+
+  @media (min-width: 860px) {
+    .page {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      align-items: center;
+      align-content: center;
+      gap: 64px;
+      padding: 48px;
+    }
+    footer { padding: 20px 48px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html.ready, html.ready .contact a { transition: none; }
+    .rotate.busy svg { animation: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="rule-top"></div>
+<main class="page">
+  <h1 class="vh">Northern Quarter</h1>
 
-<main>
-  <div class="inner">
-    <div class="eyebrow">Huddersfield</div>
+  <div class="mark">
+    <canvas id="logo" role="img" aria-label="Northern Quarter logo"></canvas>
+    <button class="rotate" id="rotate" type="button" aria-label="Show a different logo" title="Show a different logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 17.94 6.06L21 9"/><path d="M21 4v5h-5"/></svg>
+    </button>
+  </div>
 
-    <h1>Northern<span class="second">Quarter</span></h1>
-
-    <div class="strap">
-      <p>A grassroots music venue and bar on Wood Street.</p>
-      <p class="muted">The venue is now run by Northern Quarter Events CIC, a community
-      interest company. A proper site is on its way.</p>
-    </div>
-
-    <div class="contact">
-      <!--email_off--><a href="mailto:contact@nqhudds.org.uk">contact@nqhudds.org.uk</a><!--email_on-->
-    </div>
-
-    <div class="where">
-      <strong>28-30 Wood Street, Huddersfield HD1 1DU</strong>
-    </div>
+  <div class="copy">
+    <p class="eyebrow">Huddersfield</p>
+    <p class="lead">A grassroots music venue and bar on Wood Street.</p>
+    <p class="more">The venue is now run by Northern Quarter Events CIC, a community
+    interest company. A proper site is on its way.</p>
+    <p class="contact"><!--email_off--><a href="mailto:contact@nqhudds.org.uk">contact@nqhudds.org.uk</a><!--email_on--></p>
+    <p class="where">28-30 Wood Street, Huddersfield HD1 1DU</p>
   </div>
 </main>
 
 <footer>
   <div class="fin">
-    Northern Quarter Events CIC, a community interest company registered in England and
-    Wales, company number 16479547.
+    <p class="now" id="now" hidden></p>
+    <p>Northern Quarter Events CIC, a community interest company registered in England and
+    Wales, company number 16479547.</p>
   </div>
 </footer>
+
+<script>
+(() => {
+  // The N and Q sets, the palette and the layout rules are James Foster's NQ Generator
+  // (shared 6 Oct 2026), unchanged. What is new here is the site behaviour around them.
+  const NS = ["Black Ops One:400", "Gravitas One:400", "Labrada:900", "Fraunces:900", "Cinzel:900", "Roboto Slab:800", "Peralta:400", "Corben:700", "Calistoga:400", "Righteous:400", "Audiowide:400", "Big Shoulders:900", "Saira Stencil:900", "Space Mono:700", "Patua One:400", "Krona One:400", "Zen Dots:400", "Fruktur:400", "Protest Guerrilla:400", "Vollkorn:900"];
+  const QS = ["Bodoni Moda:900", "EB Garamond:800", "Texturina:900", "Montenegrin Gothic One:400", "Bigshot One:400", "Staatliches:400", "Rowdies:400", "Tilt Warp:400", "Fontdiner Swanky:400", "Cherry Swash:700", "Stick No Bills:800", "Courier Prime:700", "Spectral:800", "Unbounded:600", "Chewy:400", "Space Grotesk:700", "Podkova:800", "Londrina Solid:900", "Days One:400", "Alegreya:800"];
+  const P = window.NQ_PALETTE;
+  const START = window.NQ_START || { c: 0, returning: false };
+
+  // Timings, in milliseconds. Never faster than about three changes a second: the whole page
+  // changes colour, and faster full-screen flashing is a seizure risk.
+  const FIRST_COLOUR = [340, 340, 340, 360, 400, 460, 540]; // first visit: colour and logo together, then the colour settles
+  const FIRST_LOGO = [420, 520, 650, 820];                 // then a few more logos on that colour before the logo settles
+  const EACH_LOAD = [340, 430, 560];                       // every later page load, and the rotate button: three logos, then settle
+  const FONT_WAIT = 3000;                                  // start anyway if the fonts take longer than this
+
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const root = document.documentElement;
+  const cv = document.getElementById("logo"), ctx = cv.getContext("2d");
+  const mctx = document.createElement("canvas").getContext("2d");
+  const btn = document.getElementById("rotate");
+  const now = document.getElementById("now");
+  const themeMeta = document.getElementById("theme-color");
+  const icon = document.getElementById("favicon");
+
+  const parse = s => { const [family, weight = "400"] = s.split(":"); return { family, weight }; };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const rnd = (len, not) => { let i; do { i = Math.floor(Math.random() * len); } while (len > 1 && i === not); return i; };
+  const pick = (pool, not) => { if (pool.length < 2) return pool[0]; let v; do { v = pool[Math.floor(Math.random() * pool.length)]; } while (v === not); return v; };
+
+  const metrics = new Map();
+  function measure(f, ch) {
+    const key = f.weight + " " + f.family + " " + ch;
+    if (!metrics.has(key)) {
+      mctx.font = `${f.weight} 1000px "${f.family}"`;
+      const m = mctx.measureText(ch);
+      metrics.set(key, { a: m.actualBoundingBoxAscent, d: Math.max(0, m.actualBoundingBoxDescent), l: m.actualBoundingBoxLeft, r: m.actualBoundingBoxRight });
+    }
+    return metrics.get(key);
+  }
+
+  // Layout in a 1000-unit square. The label sits inside the right half:
+  // NORTHERN runs from the centre line to the 6% right inset.
+  let LABEL = 9;
+  function labelSize() {
+    mctx.font = "700 1000px Poppins";
+    const m = mctx.measureText("NORTHERN");
+    return 43.2 / ((m.actualBoundingBoxLeft + m.actualBoundingBoxRight) / 1000 + 7 * 0.01);
+  }
+  const BOX = { left: 80, right: 920, top: 80, gap: 24 };
+
+  let nPool = NS.map((_, i) => i), qPool = QS.map((_, i) => i);
+  const state = { n: -1, q: -1, c: START.c };
+  let ready = false;
+
+  function draw() {
+    if (!ready || state.n < 0) return;
+    const S = cv.width / 1000;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.setTransform(S, 0, 0, S, 0, 0);
+    ctx.fillStyle = "#fff";
+
+    // Label: two lines, Poppins Bold, right aligned, line height 1.12, bottom inset 4.5%.
+    const fs = LABEL * 10, labelTop = 955 - 2.24 * fs;
+    ctx.font = `700 ${fs}px Poppins`; ctx.textAlign = "right"; ctx.textBaseline = "alphabetic";
+    if ("letterSpacing" in ctx) ctx.letterSpacing = `${0.01 * fs}px`;
+    const rx = 940 + 0.01 * fs;
+    ctx.fillText("NORTHERN", rx, labelTop + 0.91 * fs);
+    ctx.fillText("QUARTER", rx, labelTop + 1.12 * fs + 0.91 * fs);
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+    // Mark: N and Q at one cap height, fitted to the margin, centred between the top and the label.
+    const nF = parse(NS[state.n]), qF = parse(QS[state.q]);
+    const n = measure(nF, "N"), q = measure(qF, "Q");
+    const nw = (n.l + n.r) / n.a, qw = (q.l + q.r) / q.a, desc = Math.max(n.d / n.a, q.d / q.a);
+    const bottom = labelTop - BOX.top, hardStop = labelTop - 26;
+    const H = Math.min((BOX.right - BOX.left - BOX.gap) / (nw + qw), (bottom - BOX.top) / (1 + desc / 2), (hardStop - BOX.top) / (1 + desc));
+    const x0 = BOX.left + (BOX.right - BOX.left - (H * (nw + qw) + BOX.gap)) / 2;
+    const visual = H * (1 + desc / 2);
+    const base = Math.min(labelTop / 2 + visual / 2 - H * desc / 2, hardStop - H * desc);
+    const nSize = 1000 * H / n.a, qSize = 1000 * H / q.a;
+    ctx.textAlign = "left";
+    ctx.font = `${nF.weight} ${nSize}px "${nF.family}"`; ctx.fillText("N", x0 + n.l * nSize / 1000, base);
+    ctx.font = `${qF.weight} ${qSize}px "${qF.family}"`; ctx.fillText("Q", x0 + H * nw + BOX.gap + q.l * qSize / 1000, base);
+  }
+
+  // Keep the canvas sharp at whatever size the page gives it.
+  function fit() {
+    const css = cv.getBoundingClientRect().width;
+    const px = Math.max(300, Math.round(css * Math.min(window.devicePixelRatio || 1, 3)));
+    if (cv.width !== px) { cv.width = cv.height = px; draw(); }
+  }
+  new ResizeObserver(fit).observe(cv);
+
+  function caption() {
+    if (state.n < 0) return;
+    now.textContent = `${P[state.c][0]} · N in ${parse(NS[state.n]).family} · Q in ${parse(QS[state.q]).family}`;
+    now.hidden = false;
+  }
+
+  function setColour(i) {
+    state.c = i;
+    root.style.setProperty("--nq", P[i][1]);
+    if (themeMeta) themeMeta.setAttribute("content", P[i][1]);
+  }
+  function keepColour() {
+    try { sessionStorage.setItem("nq-colour", P[state.c][1]); } catch (e) {}
+  }
+
+  function newLogo() {
+    state.n = pick(nPool, state.n);
+    state.q = pick(qPool, state.q);
+    draw();
+    caption();
+  }
+
+  // The browser tab icon follows the settled logo: the N and Q on the visit's colour.
+  function favicon() {
+    try {
+      const c = document.createElement("canvas"); c.width = c.height = 64;
+      const x = c.getContext("2d");
+      x.fillStyle = P[state.c][1]; x.fillRect(0, 0, 64, 64);
+      const nF = parse(NS[state.n]), qF = parse(QS[state.q]);
+      const n = measure(nF, "N"), q = measure(qF, "Q");
+      const nw = (n.l + n.r) / n.a, qw = (q.l + q.r) / q.a, desc = Math.max(n.d / n.a, q.d / q.a);
+      const margin = 7, gap = 2;
+      const H = Math.min((64 - 2 * margin - gap) / (nw + qw), (64 - 2 * margin) / (1 + desc));
+      const x0 = (64 - (H * (nw + qw) + gap)) / 2, base = (64 - H * (1 + desc)) / 2 + H;
+      x.fillStyle = "#fff";
+      x.font = `${nF.weight} ${1000 * H / n.a}px "${nF.family}"`; x.fillText("N", x0 + n.l * H / n.a, base);
+      x.font = `${qF.weight} ${1000 * H / q.a}px "${qF.family}"`; x.fillText("Q", x0 + H * nw + gap + q.l * H / q.a, base);
+      icon.href = c.toDataURL("image/png");
+    } catch (e) {}
+  }
+
+  // A run is one sequence of changes. Starting a new one (the rotate button) stops the old one.
+  let run = { dead: true };
+  const begin = () => { run.dead = true; run = { dead: false }; return run; };
+  const busy = on => btn.classList.toggle("busy", on && !still);
+  function settle() { busy(false); caption(); favicon(); }
+
+  async function cycle(r, steps) {
+    busy(true);
+    for (const ms of steps) {
+      newLogo();
+      await sleep(ms);
+      if (r.dead) return;
+    }
+    newLogo();
+    settle();
+  }
+
+  async function firstVisit(r) {
+    busy(true);
+    for (const ms of FIRST_COLOUR) {
+      setColour(rnd(P.length, state.c));
+      newLogo();
+      await sleep(ms);
+      if (r.dead) return;
+    }
+    keepColour();
+    await cycle(r, FIRST_LOGO);
+  }
+
+  // Fonts: wait for Poppins and the 40 logo fonts, but never longer than FONT_WAIT.
+  // Only fonts that actually arrived go in the draw; late ones join when they land.
+  const okN = new Set(), okQ = new Set();
+  function loadFonts() {
+    const one = (s, i, ok) => {
+      const f = parse(s);
+      return document.fonts.load(`${f.weight} 100px "${f.family}"`, "NQ").then(faces => { if (faces.length) ok.add(i); }, () => {});
+    };
+    return Promise.all([
+      document.fonts.load("700 100px Poppins", "NORTHERN QUARTER").catch(() => {}),
+      ...NS.map((s, i) => one(s, i, okN)),
+      ...QS.map((s, i) => one(s, i, okQ))
+    ]);
+  }
+  async function fontsReady() {
+    const all = loadFonts();
+    await Promise.race([all, sleep(FONT_WAIT)]);
+    if (okN.size) nPool = [...okN];
+    if (okQ.size) qPool = [...okQ];
+    all.then(() => {
+      if (okN.size > nPool.length || okQ.size > qPool.length) {
+        metrics.clear();
+        if (okN.size) nPool = [...okN];
+        if (okQ.size) qPool = [...okQ];
+        LABEL = labelSize();
+        draw();
+      }
+    });
+  }
+
+  btn.addEventListener("click", () => {
+    if (!ready) return;
+    keepColour(); // a tap while the first-visit colours are still running keeps the colour on screen
+    const r = begin();
+    if (still) { newLogo(); settle(); return; }
+    cycle(r, EACH_LOAD);
+  });
+
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add("ready")));
+
+  (async () => {
+    await fontsReady();
+    ready = true;
+    LABEL = labelSize();
+    fit();
+    const r = begin();
+    if (still) {
+      if (!START.returning) keepColour();
+      newLogo();
+      settle();
+      return;
+    }
+    if (START.returning) await cycle(r, EACH_LOAD);
+    else await firstVisit(r);
+  })();
+})();
+</script>
 
 </body>
 </html>

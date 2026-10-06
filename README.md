@@ -8,17 +8,53 @@ Run locally:
 
     node server.js     # then open http://localhost:3000
 
-## Colours
+## The look: a random logo and a random colour (since 6 Oct 2026)
 
-Option 2 from the palette, chosen by Gabby on 19 Sep 2026.
+A proof of concept for the new site's theme, on the live holding page. The logo system
+and the palette are James Foster's "NQ Generator", a Claude artifact he shared on
+6 Oct 2026. Dan, the same day: it is "both the next pallette and the new approach", a
+randomly generated logo across the website and in branding, and the palette "will do for
+now". The site behaviour around it was Dan's brief, built the same evening.
 
-    --green     #1F3D2C   footer
-    --ink       #131A16   page background
-    --bone      #F2EADC   body text
-    --sandstone #A89878   secondary text, rules
-    --acid      #C4D44A   top rule, "QUARTER", the email button
+- **Logo**: a square drawn on a canvas. White N and Q side by side at one cap height, with
+  NORTHERN over QUARTER in Poppins Bold in the bottom right. The N comes from one list of
+  20 display fonts and the Q from a different 20 (`NS` and `QS` in the script). The layout
+  rules are copied from the generator unchanged, so the logos match it.
+- **Colour**: 20 RAL paint colours (`NQ_PALETTE` in the head script). The whole page takes
+  the colour, and so do the browser bar (`theme-color`) and the email button's text.
+- **Fonts**: Google Fonts. The 40 logo fonts are requested with `text=NQ`, so each file
+  holds only those two letters (about 1 KB each, about 40 KB for all 40). Poppins for the
+  rest. The script only draws with fonts that actually arrived, and waits at most 3 s.
+
+What it does:
+
+- **First visit**: colour and logo change together, then the colour settles (about 2.7 s),
+  then a few more logos before the logo settles (about 5.6 s in all).
+- **Every later page load in the visit**: same colour; three logos, then it settles
+  (about 1.3 s).
+- **Rotate button** (bottom left of the logo): three logos, then it settles. The colour
+  stays.
+- A visit is the browser tab's session (`sessionStorage`, key `nq-colour`). Adding `?fresh`
+  to the address starts a new visit, which replays the first-visit sequence.
+- Never more than about three changes a second: the whole screen changes colour, and
+  faster full-screen flashing can trigger seizures (WCAG 2.3.1).
+- With the reduced motion setting on, nothing cycles: a colour and a logo are picked once.
+- The footer shows the colour and the two fonts in use, and the browser tab icon is redrawn
+  from the settled logo. Both are proof-of-concept extras.
+
+**Known gap, not yet decided:** small white text falls below the usual contrast standard
+(WCAG AA, 4.5:1) on three of the 20 colours: RAL 1027 Curry 3.69, RAL 2009 Traffic orange
+3.82, RAL 3017 Rose 4.04. Large and bold text (the logo, the headline, the email button)
+passes on all 20.
+
+Browser test (first visit, reload, rotate, `?fresh`, reduced motion, desktop; screenshots
+go to the output folder): `PORT=3998 node server.js &` then
+`node test/browser.cjs <outdir> http://127.0.0.1:3998/`.
 
 ## Copy
+
+Unchanged from the first holding page, except that the "Northern / Quarter" wordmark
+heading is now the logo (the heading stays in the page for screen readers and search).
 
 Placeholder, written 19 Sep 2026. Deliberately makes no claim about a reopening date,
 because at the time of writing the tenancy was not signed and the opening had already
