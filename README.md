@@ -16,28 +16,40 @@ and the palette are James Foster's "NQ Generator", a Claude artifact he shared o
 randomly generated logo across the website and in branding, and the palette "will do for
 now". The site behaviour around it was Dan's brief, built the same evening.
 
-- **Logo**: a square drawn on a canvas. White N and Q side by side at one cap height, with
-  NORTHERN over QUARTER in Poppins Bold in the bottom right. The N comes from one list of
-  20 display fonts and the Q from a different 20 (`NS` and `QS` in the script). The layout
-  rules are copied from the generator unchanged, so the logos match it.
+- **Logo**: an SVG square. White N and Q side by side at one cap height, with NORTHERN over
+  QUARTER in Poppins Bold in the bottom right. The N comes from one set of 20 display fonts
+  and the Q from a different 20. The layout rules are copied from the generator unchanged.
+- **Letters are outlines, not fonts** (since 6 Oct 2026).
+  `tools/build-glyphs.cjs` downloads each letter once from Google Fonts (`text=N` or
+  `text=Q`), takes its outline and measurements with fontkit, records its licence, and lays
+  out NORTHERN QUARTER from Poppins Bold. All of it goes in `logo/glyphs.json` (36 KB), which
+  `server.js` writes into the page and also serves at `/logo/glyphs.json`. The page draws
+  from that, so the logo downloads no fonts and starts at once. Rebuild after changing the
+  font lists: `node tools/build-glyphs.cjs` (needs the dev dependency: `npm install --include=dev`).
+- **Matching the generator exactly**: the generator measured each letter with canvas
+  `measureText` at 1000px, and Chrome reports those edges in steps of 1/64 of the font size,
+  rounded outwards (every value is a multiple of 15.625). Exact edges made the letters up to
+  about 2% bigger than the generator's, so the page and the build apply the same rounding.
+  `test/compare-with-fonts.cjs` runs the generator's own canvas code with the real fonts
+  beside the outline version: on 6 Oct 2026 every letter's measurements, the label and all
+  400 pairings matched to 0, and pixels differed only at the edges (0.04% to 0.33% of the
+  letter pixels). The spacing is now the same in every browser.
 - **Colour**: 20 RAL paint colours (`NQ_PALETTE` in the head script). The whole page takes
   the colour, and so do the browser bar (`theme-color`) and the email button's text.
-- **Fonts**: Google Fonts. The 40 logo fonts are requested with `text=NQ`, so each file
-  holds only those two letters. Measured 6 Oct 2026: 51 KB for all 40 on an iPhone, 81 KB on
-  desktop Chrome, plus 15 KB of stylesheets and 23 KB of Poppins (latin, three weights).
-  (Correction: this line first said "about 1 KB each, about 40 KB for all 40", which came
-  from a sample of five files on an iPhone.) Poppins for the rest. The script only draws
-  with fonts that actually arrived, and waits at most 3 s.
+- **Fonts**: only Poppins (400, 500, 700) for the text, from Google Fonts. Before the
+  outlines, the page also loaded the 40 logo fonts (51 KB on an iPhone, 81 KB on desktop
+  Chrome, measured 6 Oct 2026; an earlier note here said 40 KB, from a sample of five files).
 - **Licences**: all 41 fonts are open licences that allow logo use: 38 SIL Open Font
   Licence (including Poppins), 3 Apache 2.0 (Chewy, Fontdiner Swanky, Roboto Slab).
-  Checked against the folders of the google/fonts repository, 6 Oct 2026.
+  Checked against the folders of the google/fonts repository, 6 Oct 2026, and recorded per
+  letter in `logo/glyphs.json`.
 
 What it does:
 
-- **First visit**: colour and logo change together, then the colour settles (about 2.7 s),
-  then a few more logos before the logo settles (about 5.6 s in all).
+- **First visit**: colour and logo change together, then the colour settles (about 2.3 s),
+  then a few more logos before the logo settles (about 5.2 s in all).
 - **Every later page load in the visit**: same colour; three logos, then it settles
-  (about 1.3 s).
+  (about 1.4 s).
 - **Rotate button** (bottom left of the logo): three logos, then it settles. The colour
   stays.
 - A visit is the browser tab's session (`sessionStorage`, key `nq-colour`). Adding `?fresh`
@@ -83,11 +95,14 @@ Railway UI (service, Settings, Source), every deploy has to be triggered explici
 
 against `https://backboard.railway.com/graphql/v2` with `RAILWAY_USER_TOKEN`.
 
-Verify afterwards by comparing the served byte count to the local file, because Cloudflare
-sits in front and a stale response looks identical to a successful deploy:
+Verify afterwards, because Cloudflare sits in front and a stale response looks identical to
+a successful deploy. Since the outlines, the server builds the page at start-up, so compare
+the live page with what a local `node server.js` serves, not with `index.html`, and check
+the `X-NQ-Build` header (the first 12 characters of the deployed commit):
 
-    curl -s "https://nqhudds.org.uk/?v=$(date +%s)" -o /tmp/l.html -w "%{size_download}\n"
-    stat -c%s index.html
+    curl -sI "https://nqhudds.org.uk/?v=$(date +%s)" | grep -i x-nq-build
+    curl -s "https://nqhudds.org.uk/?v=$(date +%s)" -o /tmp/live.html
+    PORT=3998 node server.js & sleep 1; curl -s http://127.0.0.1:3998/ -o /tmp/local.html; cmp /tmp/live.html /tmp/local.html
 
 ## Cloudflare email obfuscation
 

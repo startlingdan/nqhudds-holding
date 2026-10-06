@@ -56,6 +56,8 @@ function summarise(label, { log, end }) {
   // 1. First visit on a phone
   const c1 = await browser.createBrowserContext();
   const p = await c1.newPage(); watch(p, '[phone]');
+  const fontFiles = [];
+  p.on('request', r => { if (r.url().startsWith('https://fonts.gstatic.com/')) fontFiles.push(r.url()); });
   await p.setViewport(phone);
   await p.goto(BASE, { waitUntil: 'domcontentloaded' });
   const shots = [];
@@ -66,6 +68,7 @@ function summarise(label, { log, end }) {
   })();
   summarise('FIRST VISIT (phone)', first);
   await p.screenshot({ path: `${OUT}/phone-2-settled.png` });
+  console.log('font files downloaded on first visit:', fontFiles.length, fontFiles.map(u => u.replace(/^https:\/\/fonts\.gstatic\.com\//, '').slice(0, 40)).join(' | '));
   const fonts = await p.evaluate(() => {
     const st = {}; document.fonts.forEach(f => { st[f.status] = (st[f.status] || 0) + 1; });
     return { st, scrollW: document.documentElement.scrollWidth, innerW: innerWidth };

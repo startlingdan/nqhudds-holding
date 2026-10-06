@@ -55,12 +55,11 @@
     if (m) m.setAttribute("content", P[i][1]);
   })();
 </script>
+<!-- The N and Q outlines and NORTHERN QUARTER, from logo/glyphs.json. server.js puts them here. -->
+<script>window.NQ_GLYPHS = /*NQ_GLYPHS*/null;</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap">
-<!-- The 40 logo fonts, cut down to just N and Q (about 1 KB each). -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@800&family=Audiowide:wght@400&family=Big+Shoulders:wght@900&family=Bigshot+One:wght@400&family=Black+Ops+One:wght@400&family=Bodoni+Moda:wght@900&family=Calistoga:wght@400&family=Cherry+Swash:wght@700&family=Chewy:wght@400&family=Cinzel:wght@900&family=Corben:wght@700&family=Courier+Prime:wght@700&family=Days+One:wght@400&family=EB+Garamond:wght@800&family=Fontdiner+Swanky:wght@400&family=Fraunces:wght@900&family=Fruktur:wght@400&family=Gravitas+One:wght@400&family=Krona+One:wght@400&family=Labrada:wght@900&text=NQ&display=block">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@900&family=Montenegrin+Gothic+One:wght@400&family=Patua+One:wght@400&family=Peralta:wght@400&family=Podkova:wght@800&family=Protest+Guerrilla:wght@400&family=Righteous:wght@400&family=Roboto+Slab:wght@800&family=Rowdies:wght@400&family=Saira+Stencil:wght@900&family=Space+Grotesk:wght@700&family=Space+Mono:wght@700&family=Spectral:wght@800&family=Staatliches:wght@400&family=Stick+No+Bills:wght@800&family=Texturina:wght@900&family=Tilt+Warp:wght@400&family=Unbounded:wght@600&family=Vollkorn:wght@900&family=Zen+Dots:wght@400&text=NQ&display=block">
 <style>
   :root {
     --nq: #131516;            /* set before paint by the script above */
@@ -93,7 +92,7 @@
     padding: max(20px, env(safe-area-inset-top)) 20px 40px;
   }
 
-  /* The logo: a square drawn on canvas, transparent, so the page colour is the square. */
+  /* The logo: an SVG square with no fill of its own, so the page colour is the square. */
   .mark {
     position: relative;
     justify-self: center;
@@ -101,7 +100,7 @@
     max-width: min(100%, 560px, 72svh);
     aspect-ratio: 1 / 1;
   }
-  .mark canvas { display: block; width: 100%; height: 100%; }
+  .mark svg { display: block; width: 100%; height: 100%; }
 
   /* The rotate button sits in the empty bottom-left of the square, level with NORTHERN QUARTER. */
   .rotate {
@@ -183,7 +182,9 @@
   <h1 class="vh">Northern Quarter</h1>
 
   <div class="mark">
-    <canvas id="logo" role="img" aria-label="Northern Quarter logo"></canvas>
+    <svg id="logo" viewBox="0 0 1000 1000" role="img" aria-label="Northern Quarter logo">
+      <g fill="#fff"><path id="nq-label"/><path id="nq-n"/><path id="nq-q"/></g>
+    </svg>
     <button class="rotate" id="rotate" type="button" aria-label="Show a different logo" title="Show a different logo">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 1 1 17.94 6.06L21 9"/><path d="M21 4v5h-5"/></svg>
     </button>
@@ -209,102 +210,78 @@
 
 <script>
 (() => {
-  // The N and Q sets, the palette and the layout rules are James Foster's NQ Generator
-  // (shared 6 Oct 2026), unchanged. What is new here is the site behaviour around them.
-  const NS = ["Black Ops One:400", "Gravitas One:400", "Labrada:900", "Fraunces:900", "Cinzel:900", "Roboto Slab:800", "Peralta:400", "Corben:700", "Calistoga:400", "Righteous:400", "Audiowide:400", "Big Shoulders:900", "Saira Stencil:900", "Space Mono:700", "Patua One:400", "Krona One:400", "Zen Dots:400", "Fruktur:400", "Protest Guerrilla:400", "Vollkorn:900"];
-  const QS = ["Bodoni Moda:900", "EB Garamond:800", "Texturina:900", "Montenegrin Gothic One:400", "Bigshot One:400", "Staatliches:400", "Rowdies:400", "Tilt Warp:400", "Fontdiner Swanky:400", "Cherry Swash:700", "Stick No Bills:800", "Courier Prime:700", "Spectral:800", "Unbounded:600", "Chewy:400", "Space Grotesk:700", "Podkova:800", "Londrina Solid:900", "Days One:400", "Alegreya:800"];
+  const DATA = window.NQ_GLYPHS;
+  if (!DATA) { document.documentElement.classList.remove("js"); return; } // no logo data: show the plain wordmark
   const P = window.NQ_PALETTE;
   const START = window.NQ_START || { c: 0, returning: false };
+  const NS = DATA.glyphs.filter(g => g.letter === "N");
+  const QS = DATA.glyphs.filter(g => g.letter === "Q");
 
-  // Timings, in milliseconds. Never faster than about three changes a second: the whole page
-  // changes colour, and faster full-screen flashing is a seizure risk.
-  const FIRST_COLOUR = [340, 340, 340, 360, 400, 460, 540]; // first visit: colour and logo together, then the colour settles
-  const FIRST_LOGO = [420, 520, 650, 820];                 // then a few more logos on that colour before the logo settles
-  const EACH_LOAD = [340, 430, 560];                       // every later page load, and the rotate button: three logos, then settle
-  const FONT_WAIT = 3000;                                  // start anyway if the fonts take longer than this
-
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const root = document.documentElement;
-  const cv = document.getElementById("logo"), ctx = cv.getContext("2d");
-  const mctx = document.createElement("canvas").getContext("2d");
-  const btn = document.getElementById("rotate");
-  const now = document.getElementById("now");
-  const themeMeta = document.getElementById("theme-color");
-  const icon = document.getElementById("favicon");
-
-  const parse = s => { const [family, weight = "400"] = s.split(":"); return { family, weight }; };
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const rnd = (len, not) => { let i; do { i = Math.floor(Math.random() * len); } while (len > 1 && i === not); return i; };
-  const pick = (pool, not) => { if (pool.length < 2) return pool[0]; let v; do { v = pool[Math.floor(Math.random() * pool.length)]; } while (v === not); return v; };
-
-  const metrics = new Map();
-  function measure(f, ch) {
-    const key = f.weight + " " + f.family + " " + ch;
-    if (!metrics.has(key)) {
-      mctx.font = `${f.weight} 1000px "${f.family}"`;
-      const m = mctx.measureText(ch);
-      metrics.set(key, { a: m.actualBoundingBoxAscent, d: Math.max(0, m.actualBoundingBoxDescent), l: m.actualBoundingBoxLeft, r: m.actualBoundingBoxRight });
-    }
-    return metrics.get(key);
-  }
-
-  // Layout in a 1000-unit square. The label sits inside the right half:
-  // NORTHERN runs from the centre line to the 6% right inset.
-  let LABEL = 9;
-  function labelSize() {
-    mctx.font = "700 1000px Poppins";
-    const m = mctx.measureText("NORTHERN");
-    return 43.2 / ((m.actualBoundingBoxLeft + m.actualBoundingBoxRight) / 1000 + 7 * 0.01);
-  }
+  // ---- The logo: James Foster's NQ Generator layout, drawn from outlines instead of fonts. ----
+  // His generator measured each letter with canvas measureText at 1000px. Chrome reports those
+  // edges in steps of 1/64 of the font size, rounded outwards, so the same rounding is applied to
+  // the outline's bounding box here. The result matches the generator in Chrome, and is the same
+  // in every browser. The spacing rules below are his, unchanged.
   const BOX = { left: 80, right: 920, top: 80, gap: 24 };
-
-  let nPool = NS.map((_, i) => i), qPool = QS.map((_, i) => i);
-  const state = { n: -1, q: -1, c: START.c };
-  let ready = false;
-
-  function draw() {
-    if (!ready || state.n < 0) return;
-    const S = cv.width / 1000;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, cv.width, cv.height);
-    ctx.setTransform(S, 0, 0, S, 0, 0);
-    ctx.fillStyle = "#fff";
-
-    // Label: two lines, Poppins Bold, right aligned, line height 1.12, bottom inset 4.5%.
-    const fs = LABEL * 10, labelTop = 955 - 2.24 * fs;
-    ctx.font = `700 ${fs}px Poppins`; ctx.textAlign = "right"; ctx.textBaseline = "alphabetic";
-    if ("letterSpacing" in ctx) ctx.letterSpacing = `${0.01 * fs}px`;
-    const rx = 940 + 0.01 * fs;
-    ctx.fillText("NORTHERN", rx, labelTop + 0.91 * fs);
-    ctx.fillText("QUARTER", rx, labelTop + 1.12 * fs + 0.91 * fs);
-    if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
-
-    // Mark: N and Q at one cap height, fitted to the margin, centred between the top and the label.
-    const nF = parse(NS[state.n]), qF = parse(QS[state.q]);
-    const n = measure(nF, "N"), q = measure(qF, "Q");
+  const STEP = 1000 / 64;
+  const out = v => Math.ceil(v / STEP - 1e-9) * STEP, inn = v => Math.floor(v / STEP + 1e-9) * STEP;
+  function measure(g) {
+    const k = 1000 / g.upm, [x0, y0, x1, y1] = g.bbox;
+    return { a: out(y1 * k), d: Math.max(0, out(-y0 * k)), l: -inn(x0 * k), r: out(x1 * k) };
+  }
+  // Mark: N and Q at one cap height, fitted to the margin, centred between the top and the label.
+  function layout(nG, qG) {
+    const labelTop = DATA.label.top;
+    const n = measure(nG), q = measure(qG);
     const nw = (n.l + n.r) / n.a, qw = (q.l + q.r) / q.a, desc = Math.max(n.d / n.a, q.d / q.a);
     const bottom = labelTop - BOX.top, hardStop = labelTop - 26;
     const H = Math.min((BOX.right - BOX.left - BOX.gap) / (nw + qw), (bottom - BOX.top) / (1 + desc / 2), (hardStop - BOX.top) / (1 + desc));
     const x0 = BOX.left + (BOX.right - BOX.left - (H * (nw + qw) + BOX.gap)) / 2;
     const visual = H * (1 + desc / 2);
     const base = Math.min(labelTop / 2 + visual / 2 - H * desc / 2, hardStop - H * desc);
-    const nSize = 1000 * H / n.a, qSize = 1000 * H / q.a;
-    ctx.textAlign = "left";
-    ctx.font = `${nF.weight} ${nSize}px "${nF.family}"`; ctx.fillText("N", x0 + n.l * nSize / 1000, base);
-    ctx.font = `${qF.weight} ${qSize}px "${qF.family}"`; ctx.fillText("Q", x0 + H * nw + BOX.gap + q.l * qSize / 1000, base);
+    // The generator drew each letter at font size 1000 * H / ascent, from the measured left edge.
+    // s is that size in outline units; x is where the letter's origin lands.
+    const sN = 1000 * H / (n.a * nG.upm), sQ = 1000 * H / (q.a * qG.upm);
+    return { H, x0, base, n: { s: sN, x: x0 + n.l * H / n.a, y: base }, q: { s: sQ, x: x0 + H * nw + BOX.gap + q.l * H / q.a, y: base } };
   }
+  const r3 = v => Math.round(v * 1000) / 1000;
+  const place = p => `matrix(${r3(p.s)} 0 0 ${r3(-p.s)} ${r3(p.x)} ${r3(p.y)})`;
 
-  // Keep the canvas sharp at whatever size the page gives it.
-  function fit() {
-    const css = cv.getBoundingClientRect().width;
-    const px = Math.max(300, Math.round(css * Math.min(window.devicePixelRatio || 1, 3)));
-    if (cv.width !== px) { cv.width = cv.height = px; draw(); }
+  // The whole logo as a standalone SVG (for saving, the tab icon and later the admin previews).
+  function svg(nG, qG, colour) {
+    const L = layout(nG, qG);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">${colour ? `<rect width="1000" height="1000" fill="${colour}"/>` : ""}<g fill="#fff"><path d="${DATA.label.d}"/><path transform="${place(L.n)}" d="${nG.d}"/><path transform="${place(L.q)}" d="${qG.d}"/></g></svg>`;
   }
-  new ResizeObserver(fit).observe(cv);
+  window.NQ_LOGO = { glyphs: DATA.glyphs, label: DATA.label, measure, layout, svg };
+
+  // ---- The page behaviour ----
+  // Timings, in milliseconds. Never faster than about three changes a second: the whole page
+  // changes colour, and faster full-screen flashing is a seizure risk.
+  const FIRST_COLOUR = [340, 340, 340, 360, 400, 460, 540]; // first visit: colour and logo together, then the colour settles
+  const FIRST_LOGO = [420, 520, 650, 820];                 // then a few more logos on that colour before the logo settles
+  const EACH_LOAD = [340, 430, 560];                       // every later page load, and the rotate button: three logos, then settle
+
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const root = document.documentElement;
+  const pathN = document.getElementById("nq-n"), pathQ = document.getElementById("nq-q");
+  const btn = document.getElementById("rotate");
+  const now = document.getElementById("now");
+  const themeMeta = document.getElementById("theme-color");
+  const icon = document.getElementById("favicon");
+  document.getElementById("nq-label").setAttribute("d", DATA.label.d);
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const rnd = (len, not) => { let i; do { i = Math.floor(Math.random() * len); } while (len > 1 && i === not); return i; };
+  const state = { n: -1, q: -1, c: START.c };
+
+  function draw() {
+    const nG = NS[state.n], qG = QS[state.q], L = layout(nG, qG);
+    pathN.setAttribute("d", nG.d); pathN.setAttribute("transform", place(L.n));
+    pathQ.setAttribute("d", qG.d); pathQ.setAttribute("transform", place(L.q));
+  }
 
   function caption() {
-    if (state.n < 0) return;
-    now.textContent = `${P[state.c][0]} · N in ${parse(NS[state.n]).family} · Q in ${parse(QS[state.q]).family}`;
+    now.textContent = `${P[state.c][0]} · N in ${NS[state.n].family} · Q in ${QS[state.q].family}`;
     now.hidden = false;
   }
 
@@ -318,29 +295,24 @@
   }
 
   function newLogo() {
-    state.n = pick(nPool, state.n);
-    state.q = pick(qPool, state.q);
+    state.n = rnd(NS.length, state.n);
+    state.q = rnd(QS.length, state.q);
     draw();
     caption();
   }
 
   // The browser tab icon follows the settled logo: the N and Q on the visit's colour.
   function favicon() {
-    try {
-      const c = document.createElement("canvas"); c.width = c.height = 64;
-      const x = c.getContext("2d");
-      x.fillStyle = P[state.c][1]; x.fillRect(0, 0, 64, 64);
-      const nF = parse(NS[state.n]), qF = parse(QS[state.q]);
-      const n = measure(nF, "N"), q = measure(qF, "Q");
-      const nw = (n.l + n.r) / n.a, qw = (q.l + q.r) / q.a, desc = Math.max(n.d / n.a, q.d / q.a);
-      const margin = 7, gap = 2;
-      const H = Math.min((64 - 2 * margin - gap) / (nw + qw), (64 - 2 * margin) / (1 + desc));
-      const x0 = (64 - (H * (nw + qw) + gap)) / 2, base = (64 - H * (1 + desc)) / 2 + H;
-      x.fillStyle = "#fff";
-      x.font = `${nF.weight} ${1000 * H / n.a}px "${nF.family}"`; x.fillText("N", x0 + n.l * H / n.a, base);
-      x.font = `${qF.weight} ${1000 * H / q.a}px "${qF.family}"`; x.fillText("Q", x0 + H * nw + gap + q.l * H / q.a, base);
-      icon.href = c.toDataURL("image/png");
-    } catch (e) {}
+    const nG = NS[state.n], qG = QS[state.q], n = measure(nG), q = measure(qG);
+    const nw = (n.l + n.r) / n.a, qw = (q.l + q.r) / q.a, desc = Math.max(n.d / n.a, q.d / q.a);
+    const margin = 7, gap = 2;
+    const H = Math.min((64 - 2 * margin - gap) / (nw + qw), (64 - 2 * margin) / (1 + desc));
+    const x0 = (64 - (H * (nw + qw) + gap)) / 2, base = (64 - H * (1 + desc)) / 2 + H;
+    const sN = 1000 * H / (n.a * nG.upm), sQ = 1000 * H / (q.a * qG.upm);
+    const mark = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="${P[state.c][1]}"/><g fill="#fff">` +
+      `<path transform="${place({ s: sN, x: x0 + n.l * H / n.a, y: base })}" d="${nG.d}"/>` +
+      `<path transform="${place({ s: sQ, x: x0 + H * nw + gap + q.l * H / q.a, y: base })}" d="${qG.d}"/></g></svg>`;
+    icon.href = "data:image/svg+xml," + encodeURIComponent(mark);
   }
 
   // A run is one sequence of changes. Starting a new one (the rotate button) stops the old one.
@@ -372,38 +344,7 @@
     await cycle(r, FIRST_LOGO);
   }
 
-  // Fonts: wait for Poppins and the 40 logo fonts, but never longer than FONT_WAIT.
-  // Only fonts that actually arrived go in the draw; late ones join when they land.
-  const okN = new Set(), okQ = new Set();
-  function loadFonts() {
-    const one = (s, i, ok) => {
-      const f = parse(s);
-      return document.fonts.load(`${f.weight} 100px "${f.family}"`, "NQ").then(faces => { if (faces.length) ok.add(i); }, () => {});
-    };
-    return Promise.all([
-      document.fonts.load("700 100px Poppins", "NORTHERN QUARTER").catch(() => {}),
-      ...NS.map((s, i) => one(s, i, okN)),
-      ...QS.map((s, i) => one(s, i, okQ))
-    ]);
-  }
-  async function fontsReady() {
-    const all = loadFonts();
-    await Promise.race([all, sleep(FONT_WAIT)]);
-    if (okN.size) nPool = [...okN];
-    if (okQ.size) qPool = [...okQ];
-    all.then(() => {
-      if (okN.size > nPool.length || okQ.size > qPool.length) {
-        metrics.clear();
-        if (okN.size) nPool = [...okN];
-        if (okQ.size) qPool = [...okQ];
-        LABEL = labelSize();
-        draw();
-      }
-    });
-  }
-
   btn.addEventListener("click", () => {
-    if (!ready) return;
     keepColour(); // a tap while the first-visit colours are still running keeps the colour on screen
     const r = begin();
     if (still) { newLogo(); settle(); return; }
@@ -412,21 +353,17 @@
 
   requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add("ready")));
 
-  (async () => {
-    await fontsReady();
-    ready = true;
-    LABEL = labelSize();
-    fit();
-    const r = begin();
-    if (still) {
-      if (!START.returning) keepColour();
-      newLogo();
-      settle();
-      return;
-    }
-    if (START.returning) await cycle(r, EACH_LOAD);
-    else await firstVisit(r);
-  })();
+  // Start straight away: the outlines are already in the page, so there is nothing to wait for.
+  const r = begin();
+  if (still) {
+    if (!START.returning) keepColour();
+    newLogo();
+    settle();
+  } else if (START.returning) {
+    cycle(r, EACH_LOAD);
+  } else {
+    firstVisit(r);
+  }
 })();
 </script>
 
