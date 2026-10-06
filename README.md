@@ -1,5 +1,11 @@
 # nqhudds.org.uk holding page
 
+**Replaced on 6 Oct 2026.** nqhudds.org.uk is now served by the Next.js site in
+`startlingdan/nqhudds` (Railway service `nqhudds-web`, same project). This service keeps running
+with no domain, as a fallback; this repo stays as the history of the logo work. To put it back:
+move the custom domain to service `927941d9-a685-4eea-9d6b-42777e4e9f93` and point the Cloudflare
+CNAME for nqhudds.org.uk at the target Railway gives (it was `tlg7lxz9.up.railway.app`).
+
 One page, no dependencies, no build step. `server.js` is a plain Node http server that
 serves `index.html` on every path. Deployed on Railway, in Dan's own Railway workspace
 (`startlingdan's Projects`), served at the apex `nqhudds.org.uk` with no www.
