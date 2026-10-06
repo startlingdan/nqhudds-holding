@@ -23,8 +23,14 @@ now". The site behaviour around it was Dan's brief, built the same evening.
 - **Colour**: 20 RAL paint colours (`NQ_PALETTE` in the head script). The whole page takes
   the colour, and so do the browser bar (`theme-color`) and the email button's text.
 - **Fonts**: Google Fonts. The 40 logo fonts are requested with `text=NQ`, so each file
-  holds only those two letters (about 1 KB each, about 40 KB for all 40). Poppins for the
-  rest. The script only draws with fonts that actually arrived, and waits at most 3 s.
+  holds only those two letters. Measured 6 Oct 2026: 51 KB for all 40 on an iPhone, 81 KB on
+  desktop Chrome, plus 15 KB of stylesheets and 23 KB of Poppins (latin, three weights).
+  (Correction: this line first said "about 1 KB each, about 40 KB for all 40", which came
+  from a sample of five files on an iPhone.) Poppins for the rest. The script only draws
+  with fonts that actually arrived, and waits at most 3 s.
+- **Licences**: all 41 fonts are open licences that allow logo use: 38 SIL Open Font
+  Licence (including Poppins), 3 Apache 2.0 (Chewy, Fontdiner Swanky, Roboto Slab).
+  Checked against the folders of the google/fonts repository, 6 Oct 2026.
 
 What it does:
 
